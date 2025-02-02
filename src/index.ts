@@ -1,12 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import fastify from "fastify";
-
-interface Superhero {
-  id: number;
-  superhero_name: string;
-  superpower: string;
-  humility_score: number;
-}
+import { container } from "./config/di";
+import registerRoutes from "./config/routes";
 
 const server = fastify({
   logger: true,
@@ -19,38 +14,7 @@ const prisma = new PrismaClient({
   },
 });
 
-// Route to add a superhero
-server.post("/superheroes", async (request, reply) => {
-  const { superhero_name, superpower, humility_score } = request.body as {
-    superhero_name: string;
-    superpower: string;
-    humility_score: number;
-  };
-
-  if (!superhero_name || !superpower || humility_score === undefined) {
-    return reply.status(400).send({ error: "Missing required fields" });
-  }
-
-  const newHero = await prisma.superhero.create({
-    data: {
-      superhero_name,
-      superpower,
-      humility_score,
-    },
-  });
-
-  return reply.status(201).send(newHero);
-});
-
-// Route to get superheroes sorted by humilityScore (descending)
-server.get("/superheroes", async (_request, reply) => {
-  const sortedHeroes = await prisma.superhero.findMany({
-    orderBy: {
-      humility_score: "desc",
-    },
-  });
-  return reply.send(sortedHeroes);
-});
+server.register(registerRoutes);
 
 server.listen({ port: 8080, host: "0.0.0.0" }, async (err, address) => {
   if (err) {
@@ -59,7 +23,7 @@ server.listen({ port: 8080, host: "0.0.0.0" }, async (err, address) => {
   }
   console.log(`Server listening at ${address}`);
   try {
-    await prisma.$connect();
+    await container.prisma.$connect();
     console.log("Connected to database");
   } catch (error) {
     console.error("Database connection error:", error);
