@@ -11,27 +11,28 @@ all: backend_dig
 backend_dig:
 	@echo "Building backend..."
 	docker build -t $(YOUR_DOCKERHUB_USER)/backend_dig:latest .
+
 # Development commands
 dev:
-	@echo "Installing dependencies..."
-	yarn install
-	@echo "Building..."
-	yarn run build
+	@echo "Installing backend dependencies..."
+	cd api && yarn install
+	@echo "Installing frontend dependencies..."
+	cd front && yarn install
+	@echo "Building backend..."
+	cd api && yarn run build
+	@echo "Building frontend..."
+	cd front && yarn run build
 	@echo "Running development commands..."
 	# Start Docker Compose
 	docker compose up -d
 	@sleep 5
 	@echo "Running Prisma migrations..."
-	npx prisma migrate dev --name init
-	npx prisma migrate deploy
+	cd api && npx prisma migrate dev --name init
+	cd api && npx prisma migrate deploy
 	@echo "Generating Prisma client..."
-	npx prisma generate
-	# Uncomment to seed the database if needed
-	# npm run seed
-	@echo "Starting backend..."
+	cd api && npx prisma generate
+	@echo "Starting backend and frontend..."
 	docker compose up --build -d
-
-	
 
 # Deploy command
 deploy: all

@@ -1,8 +1,10 @@
+version: '3.8'
+
 services:
   backend:
     container_name: node-backend
     build:
-      context: .
+      context: ./api
       dockerfile: Dockerfile
     image: node-backend:latest
     ports:
@@ -12,7 +14,18 @@ services:
     depends_on:
       - db
     volumes:
-      - .:/app
+      - ./api:/app
+
+  frontend:
+    container_name: react-frontend
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    image: react-frontend:latest
+    ports:
+      - 3000:3000
+    volumes:
+      - ./front:/app
 
   db:
     container_name: postgres-sql
