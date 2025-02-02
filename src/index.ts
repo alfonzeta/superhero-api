@@ -19,6 +19,16 @@ fastify.post("/superheroes", async (request, reply) => {
     return reply.status(400).send({ error: "Missing required fields" });
   }
 
+  if (
+    typeof humilityScore !== "number" ||
+    humilityScore < 1 ||
+    humilityScore > 10
+  ) {
+    return reply
+      .status(400)
+      .send({ error: "Humility score must be a number between 1 and 10" });
+  }
+
   const newHero: Superhero = {
     id: superheroes.length + 1,
     name,
