@@ -9,7 +9,7 @@ export const createSuperheroSchema = {
     properties: {
       superhero_name: { type: "string", minLength: 1 },
       superpower: { type: "string", minLength: 10 },
-      humility_score: { type: "integer" },
+      humility_score: { type: "integer", minimum: 1, maximum: 10 },
     },
     additionalProperties: false,
   },

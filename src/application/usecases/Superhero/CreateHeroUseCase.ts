@@ -16,8 +16,8 @@ class CreateHeroUseCase {
     if (superpower.trim().length < 10) {
       throw new Error("superpower must be at least 10 characters long");
     }
-    if (humility_score < 0 || humility_score > 100) {
-      throw new Error("humility_score must be between 0 and 100");
+    if (humility_score < 0 || humility_score > 10) {
+      throw new Error("humility_score must be between 0 and 10");
     }
 
     try {
