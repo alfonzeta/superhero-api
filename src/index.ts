@@ -1,52 +1,79 @@
-import Fastify from "fastify";
-
-const fastify = Fastify({ logger: true });
+import { PrismaClient } from "@prisma/client";
+import fastify from "fastify";
 
 interface Superhero {
   id: number;
-  name: string;
+  superhero_name: string;
   superpower: string;
-  humilityScore: number;
+  humility_score: number;
 }
 
-let superheroes: Superhero[] = [];
+const server = fastify({
+  logger: true,
+});
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
 // Route to add a superhero
-fastify.post("/superheroes", async (request, reply) => {
-  const { name, superpower, humilityScore } = request.body as Superhero;
+server.post("/superheroes", async (request, reply) => {
+  const { superhero_name, superpower, humility_score } = request.body as {
+    superhero_name: string;
+    superpower: string;
+    humility_score: number;
+  };
 
-  if (!name || !superpower || humilityScore === undefined) {
+  if (!superhero_name || !superpower || humility_score === undefined) {
     return reply.status(400).send({ error: "Missing required fields" });
   }
 
-  const newHero: Superhero = {
-    id: superheroes.length + 1,
-    name,
-    superpower,
-    humilityScore,
-  };
+  const newHero = await prisma.superhero.create({
+    data: {
+      superhero_name,
+      superpower,
+      humility_score,
+    },
+  });
 
-  superheroes.push(newHero);
   return reply.status(201).send(newHero);
 });
 
 // Route to get superheroes sorted by humilityScore (descending)
-fastify.get("/superheroes", async (_request, reply) => {
-  const sortedHeroes = superheroes.sort(
-    (a, b) => b.humilityScore - a.humilityScore
-  );
+server.get("/superheroes", async (_request, reply) => {
+  const sortedHeroes = await prisma.superhero.findMany({
+    orderBy: {
+      humility_score: "desc",
+    },
+  });
   return reply.send(sortedHeroes);
 });
 
-// Start the server
-const start = async () => {
-  try {
-    await fastify.listen({ port: 3000 });
-    console.log("Server running on http://localhost:3000");
-  } catch (err) {
-    fastify.log.error(err);
+server.listen({ port: 8080, host: "0.0.0.0" }, async (err, address) => {
+  if (err) {
+    console.error(err);
     process.exit(1);
   }
-};
+  console.log(`Server listening at ${address}`);
+  try {
+    await prisma.$connect();
+    console.log("Connected to database");
+  } catch (error) {
+    console.error("Database connection error:", error);
+    process.exit(1);
+  }
+});
 
-start();
+// Gracefully disconnect Prisma when the server is shutting down
+process.on("SIGINT", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});

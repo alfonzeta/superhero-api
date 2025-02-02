@@ -1,0 +1,17 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Superhero {
+  id            Int    @id @default(autoincrement())
+  superhero_name String
+  superpower    String
+  humility_score Int
+  createdAt DateTime @default(now())
+}
