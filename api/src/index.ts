@@ -4,11 +4,17 @@ import { container } from "./config/di";
 import registerRoutes from "./config/routes";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
+import cors from "@fastify/cors";
 
 const server = fastify({
   logger: true,
 });
 
+// Register CORS plugin
+server.register(cors, {
+  origin: "*", // Allow all origins
+  methods: ["GET", "POST", "PUT", "DELETE"], // Allow these HTTP methods
+});
 server.register(fastifySwagger, {
   openapi: {
     info: {

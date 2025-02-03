@@ -1,0 +1,51 @@
+.hero-list {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .hero-list h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .hero-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .hero-list th,
+  .hero-list td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .hero-list th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+  .hero-list tr:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .hero-name {
+    color: #007bff;
+  }
+  
+  .hero-power {
+    font-style: italic;
+    color: #6c757d;
+  }
+  
+  .hero-score {
+    color: #28a745;
+  }
