@@ -50,4 +50,14 @@ export class PrismaSuperheroRepository implements SuperheroRepository {
       throw error;
     }
   }
+
+  async delete(id: number): Promise<void> {
+    try {
+      await this.prisma.superhero.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }

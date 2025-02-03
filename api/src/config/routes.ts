@@ -18,4 +18,8 @@ export default async function registerRoutes(fastify: FastifyInstance) {
     { schema: getAllSuperheroesSchema },
     (request, reply) => superheroController.getAllSuperheroes(request, reply)
   );
+  fastify.delete<{ Params: { id: number } }>(
+    "/superhero/:id",
+    (request, reply) => superheroController.deleteSuperhero(request, reply)
+  );
 }

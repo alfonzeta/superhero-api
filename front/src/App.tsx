@@ -46,13 +46,30 @@ function App() {
       toast.error('Error adding hero.');
     }
   };
-  
+
+  const deleteHero = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/superhero/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setHeroes(heroes.filter((hero) => hero.id !== id));
+        toast.success('Hero deleted successfully!');
+      } else {
+        toast.error('Failed to delete hero.');
+      }
+    } catch (error) {
+      console.error('Error deleting hero:', error);
+      toast.error('Error deleting hero.');
+    }
+  };
 
   return (
     <div className="App">
       <h1>Hero Management</h1>
       <HeroForm addHero={addHero} />
-      <HeroList heroes={heroes} />
+      <HeroList heroes={heroes} deleteHero={deleteHero} />
       <ToastContainer />
     </div>
   );
