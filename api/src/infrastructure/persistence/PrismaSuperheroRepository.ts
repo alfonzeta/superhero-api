@@ -35,7 +35,11 @@ export class PrismaSuperheroRepository implements SuperheroRepository {
 
   async findAllHeroes(): Promise<Superhero[]> {
     try {
-      const heroes = await this.prisma.superhero.findMany();
+      const heroes = await this.prisma.superhero.findMany({
+        orderBy: {
+          humility_score: "desc",
+        },
+      });
       return heroes.map(
         (hero) =>
           new Superhero(

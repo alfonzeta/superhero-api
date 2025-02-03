@@ -36,7 +36,8 @@ function App() {
       const data = await response.json(); // Parse response JSON
   
       if (response.ok) {
-        setHeroes([...heroes, data]);
+        const updatedHeroes = [...heroes, data].sort((a, b) => b.humility_score - a.humility_score);
+        setHeroes(updatedHeroes);
         toast.success('Hero added successfully!');
       } else {
         toast.error(data.message || 'Failed to add hero.'); // Display API error message
